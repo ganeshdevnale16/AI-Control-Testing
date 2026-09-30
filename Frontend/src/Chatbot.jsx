@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import MessageList from "./components/MessageList";
 import InputArea from "./components/InputArea";
+import DataTablesBlock from "./components/DataTablesBlock";
 import { downloadReport } from "./utils/exportExcel";
 
 // Once a batch of staged files crosses this count (matches InputArea's own
@@ -177,6 +178,58 @@ export default function Chatbot({ config, onBack }) {
           { id: Date.now() + 1, role: "assistant", type: "jsx", content: config.messages.afterFlowNudge },
         ]);
       }, 400);
+      return;
+    }
+
+    // "reveal-file" - needs a file (any type). Shows a short "reading"
+    // spinner, then reveals the step's intro + summary table + closing.
+    // The closing already asks the next step's question, so no separate
+    // next-question message is posted.
+    if (step.kind === "reveal-file") {
+      if (!hasFiles) {
+        setMessages((prev) => [...prev, ...newMsgs]);
+        setInput("");
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            { id: Date.now() + 1, role: "assistant", type: "jsx", content: config.messages.wrongKindNudge_file },
+          ]);
+        }, 400);
+        return;
+      }
+      const spinnerId = `reading-${Date.now()}`;
+      setMessages((prev) => [
+        ...prev,
+        ...newMsgs,
+        { id: spinnerId, role: "assistant", type: "spinner", content: step.readingLabel || "Reading your file..." },
+      ]);
+      setInput("");
+      setStagedFiles([]);
+      setProcessing(true);
+      const { intro, summaryTable, closing } = step.reveal;
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev.filter((m) => m.id !== spinnerId),
+          {
+            id: Date.now() + 1,
+            role: "assistant",
+            type: "jsx",
+            content: (
+              <>
+                {intro}
+                {summaryTable && (
+                  <div style={{ marginTop: 16, marginBottom: closing ? 16 : 0 }}>
+                    <DataTablesBlock tables={[summaryTable]} />
+                  </div>
+                )}
+                {closing}
+              </>
+            ),
+          },
+        ]);
+        setProcessing(false);
+        setFlowIndex((i) => i + 1);
+      }, step.readingMs || 2000);
       return;
     }
 
