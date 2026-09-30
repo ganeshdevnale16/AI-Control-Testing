@@ -20,13 +20,13 @@ const TEST_ATTRIBUTES_LIST = CONTROL_ATTRIBUTES.rows
 export const reconciliationModule = {
   id: "reconciliation",
   menu: {
-    title: "AI Reconciliation Control Testing",
-    tagline: "Custodian-to-internal-ledger position & cash reconciliation",
-    badge: "Reconciliation",
+    title: "Agentic Control Testing",
+    tagline: "Custodian-to-internal-ledger position & cash Agentic",
+    badge: "Agentic",
     accent: "#0891b2",
   },
   welcome: {
-    assistantName: "Reconciliation control testing assistant",
+    assistantName: "Agentic control testing assistant",
     // Step 0: only a short greeting + ask for the RCM. The control summary
     // is revealed after the RCM is uploaded (see the "rcm" step below).
     intro: (
