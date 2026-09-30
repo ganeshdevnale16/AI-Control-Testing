@@ -96,6 +96,8 @@ const MessageList = forwardRef(function MessageList(
                     <WelcomeContent
                       assistantName={config.welcome.assistantName}
                       intro={config.welcome.intro}
+                      summaryTable={config.welcome.summaryTable}
+                      closing={config.welcome.closing}
                     />
                   </AssistantBubble>
                 </div>
@@ -129,6 +131,58 @@ const MessageList = forwardRef(function MessageList(
               <User size={15} color="white" />
             </div>
           );
+
+          // A placeholder shown while a file "upload" is simulated - spinner
+          // + filling progress bar - swapped out for the real file bubble(s)
+          // once the randomized delay elapses.
+          if (msg.type === "uploading") {
+            const { label, durationMs } = msg.content;
+            return (
+              <div
+                key={msg.id}
+                className="msg-in"
+                style={{ display: "flex", justifyContent: "flex-end", padding: "4px 32px", gap: 10 }}
+              >
+                <div
+                  style={{
+                    background: "#e2e8f0",
+                    color: "#1e293b",
+                    borderRadius: 16,
+                    padding: "9px 14px",
+                    maxWidth: "70%",
+                    minWidth: 200,
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <SpinnerIcon size={14} />
+                    <span style={{ wordBreak: "break-all" }}>{label}</span>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 8,
+                      height: 4,
+                      borderRadius: 999,
+                      background: "#cbd5e1",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        borderRadius: 999,
+                        background: "#6366f1",
+                        width: "0%",
+                        animation: `uploadFill ${durationMs / 1000}s linear forwards`,
+                      }}
+                    />
+                  </div>
+                </div>
+                {avatar}
+              </div>
+            );
+          }
 
           // A batch upload (e.g. a whole folder of evidence files) collapses
           // into one bubble instead of one per file, so a 200+ file upload
