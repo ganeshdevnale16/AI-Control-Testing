@@ -8,6 +8,15 @@ import {
 } from "./data/populationTables";
 import { SAMPLE_LEVEL_TESTING } from "./data/sampleTesting";
 
+// The control objective/risk/description/test-attributes used to be
+// gathered one at a time via chat questions. They're now known context for
+// this test, so they're shown up front as a summary table (below the welcome
+// intro) instead - the chat-driven flow starts directly at the population
+// file upload.
+const TEST_ATTRIBUTES_LIST = CONTROL_ATTRIBUTES.rows
+  .filter((r) => /^A[1-7]$/.test(r.attr))
+  .map((r) => r.attribute);
+
 export const reconciliationModule = {
   id: "reconciliation",
   menu: {
@@ -20,63 +29,59 @@ export const reconciliationModule = {
     assistantName: "Reconciliation control testing assistant",
     intro: (
       <>
-        I test Meridian Global Custody Services' daily cash and position
-        reconciliation control the way an auditor would - checking
+        I test Global Custody Services' daily cash and position
+        reconciliation control (REC-01) the way an auditor would - checking
         timeliness, independent review, break logging, RCA quality and SLA
         closure against the evidence you give me, and rolling each finding up
         to a pass/exception verdict.
-        <br />
-        <br />
-        Let's start with the basics. What is the <strong>control objective</strong>{" "}
-        we're testing against?
+      </>
+    ),
+    // Shown below the intro, above the flow's first question - the fixed
+    // context for this test, so it doesn't need to be asked for in chat.
+    summaryTable: {
+      title: "Control Summary",
+      columns: [
+        { key: "field", label: "Field", minWidth: 150 },
+        { key: "detail", label: "Detail", minWidth: 420 },
+      ],
+      rows: [
+        { field: "Control ID", detail: "REC-01" },
+        { field: "Control objective", detail: CONTROL_CONTEXT.objective },
+        { field: "Risk", detail: CONTROL_CONTEXT.risk },
+        { field: "Control description", detail: CONTROL_CONTEXT.description },
+        {
+          field: "Test Attributes",
+          detail: (
+            <ol style={{ margin: 0, paddingLeft: 18 }}>
+              {TEST_ATTRIBUTES_LIST.map((a, i) => (
+                <li key={i} style={{ marginBottom: i === TEST_ATTRIBUTES_LIST.length - 1 ? 0 : 4 }}>
+                  {a}
+                </li>
+              ))}
+            </ol>
+          ),
+        },
+      ],
+    },
+    closing: (
+      <>
+        Let's get started - please upload the population file(s): the
+        reconciliation inventory, the recon population, the recon-tool break
+        output and the ticketing system extract, and I'll test completeness
+        and accuracy end to end.
       </>
     ),
   },
-  // A linear, chat-driven flow: three questions captured as free text, the
-  // control attributes (file or chat), then two file-upload steps that each
-  // run a processing animation and land a set of output tables.
+  // A linear, chat-driven flow: two file-upload steps that each run a
+  // processing animation and land a set of output tables, plus a plain
+  // in-between step for the user's selected sample (no processing there).
   flow: [
-    {
-      id: "objective",
-      kind: "ask",
-      field: "objective",
-      progressLabel: "Control objective",
-      question: "What is the control objective we're testing against?",
-      expected: CONTROL_CONTEXT.objective,
-    },
-    {
-      id: "risk",
-      kind: "ask",
-      field: "risk",
-      progressLabel: "Control risk",
-      question: "Now, what is the risk this control is meant to address?",
-      expected: CONTROL_CONTEXT.risk,
-    },
-    {
-      id: "description",
-      kind: "ask",
-      field: "description",
-      progressLabel: "Control description",
-      question:
-        "And the control description - how is this control meant to operate day to day?",
-      expected: CONTROL_CONTEXT.description,
-    },
-    {
-      id: "attributes",
-      kind: "ask-file-or-text",
-      progressLabel: "Control attributes",
-      question:
-        "Now share the control attributes to test against - upload a file or paste them here, whichever's easier.",
-      captured: CONTROL_ATTRIBUTES,
-      capturedIntro:
-        "Got it - here's what I've captured. A1-A3 test the recon level, A4-A7 test each break.",
-    },
     {
       id: "population",
       kind: "file",
       progressLabel: "Population testing",
       question:
-        "Next, please upload the population file(s) - the reconciliation inventory, the recon population, the recon-tool break output and the BMS extract - and I'll test completeness and accuracy end to end.",
+        "Next, please upload the population file(s) - the reconciliation inventory, the recon population, the recon-tool break output and the ticketing system extract - and I'll test completeness and accuracy end to end.",
       checks: POPULATION_CHECKS,
       runningLabel: "Testing population completeness and accuracy...",
       tables: [POPULATION_COMPLETENESS, BREAK_LEVEL_TESTING, FULL_POPULATION_ANALYTICS],
@@ -90,7 +95,6 @@ export const reconciliationModule = {
       progressLabel: "Selected sample",
       question:
         "Now, please upload your selected sample - the reconciliations you've chosen for testing. Files or the whole folder both work.",
-      capturedIntro: "Got it, thanks - I've received your selected sample.",
       capturedNote:
         "I'm not running any processing on this upload - I'll test every break within your selection once you send over the supporting evidence in the next step.",
     },
@@ -121,7 +125,7 @@ export const reconciliationModule = {
     testingSheetName: "Testing",
     auditSheetName: "Audit Trail",
   },
-  // Flat list of every procedure across all three processing steps, for the
+  // Flat list of every procedure across both processing steps, for the
   // shared Audit Trail sheet builder.
   validationChecks: [...POPULATION_CHECKS, ...EVIDENCE_CHECKS],
 };
