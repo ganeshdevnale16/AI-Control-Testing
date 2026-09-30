@@ -29,7 +29,7 @@ export const reconciliationModule = {
     assistantName: "Reconciliation control testing assistant",
     intro: (
       <>
-        I test Global Custody Services' daily cash and position
+        I test Global Custody Services daily cash and position
         reconciliation control (REC-01) the way an auditor would - checking
         timeliness, independent review, break logging, RCA quality and SLA
         closure against the evidence you give me, and rolling each finding up
