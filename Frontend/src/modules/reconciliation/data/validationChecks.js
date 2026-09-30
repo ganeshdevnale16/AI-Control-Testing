@@ -3,7 +3,7 @@
 // own - it just receives the sample you choose, so there's no check-set for it.
 //
 // Framing note: this is my own testing work, written first person throughout
-// ("I'm matching...", "I'm testing..."). I am the agent auditing Meridian's
+// ("I'm matching...", "I'm testing..."). I am the agent auditing the
 // human-run reconciliation control against attributes A1-A7 - I am not the
 // one performing the reconciliation itself, and I don't draw the sample -
 // that's your call.
@@ -14,16 +14,16 @@ export const POPULATION_CHECKS = [
     id: "pop-1",
     label: "Step 1 - Ingesting the population files",
     detail:
-      "Loading the reconciliation inventory, the recon population, the recon-tool break output and the BMS extract.",
+      "Loading the reconciliation inventory, the recon population, the recon-tool break output and the ticketing system extract.",
     subChecks: [
       "Loading R1 - reconciliation inventory (5 streams)",
       "Loading R2 - recon population, 2026-08-03 to 2026-09-04",
       "Loading R3 - recon-tool break output",
-      "Loading R4 - BMS break log extract (2026-09-25)",
+      "Loading R4 - ticketing system break log extract (2026-09-25)",
       "Checking headers, dates and record counts across all four files",
     ],
     points: [
-      "All four population files loaded cleanly - R1 (5 streams), R2 (125 recons), R3 (164 breaks), R4 (161 BMS records).",
+      "All four population files loaded cleanly - R1 (5 streams), R2 (125 recons), R3 (164 breaks), R4 (161 ticketing system records).",
     ],
   },
   {
@@ -43,9 +43,9 @@ export const POPULATION_CHECKS = [
   },
   {
     id: "pop-3",
-    label: "Step 3 - P3/P4/P5: Break population reconciles to BMS",
+    label: "Step 3 - P3/P4/P5: Break population reconciles to the ticketing system",
     detail:
-      "Reconciling the recon tool's own break count to R3, then R3 to the BMS extract (R4), then confirming every BMS record traces back to a recon break.",
+      "Reconciling the recon tool's own break count to R3, then R3 to the ticketing system extract (R4), then confirming every ticketing system record traces back to a recon break.",
     subChecks: [
       "Comparing R2's BREAK_COUNT total (164) to R3's row count",
       "Matching all 164 R3 breaks against R4 on ITEM_REF + amount",
@@ -53,23 +53,23 @@ export const POPULATION_CHECKS = [
     ],
     points: [
       "P3 - 164 vs 164. Agrees.",
-      "P4 - 164 R3 breaks vs 161 R4 records. Difference of 3 - three breaks with no matching BMS record.",
-      "P5 - all 161 BMS records trace to a recon break. No orphan entries.",
+      "P4 - 164 R3 breaks vs 161 R4 records. Difference of 3 - three breaks with no matching ticketing system record.",
+      "P5 - all 161 ticketing system records trace to a recon break. No orphan entries.",
     ],
   },
   {
     id: "pop-4",
     label: "Step 4 - Full-population sweep on A4",
     detail:
-      "Since A4 (break logged in BMS, completeness) is fully deterministic from R3 vs R4, I'm testing it across every break in the population, explaining the P4 difference.",
+      "Since A4 (break logged in the ticketing system, completeness) is fully deterministic from R3 vs R4, I'm testing it across every break in the population, explaining the P4 difference.",
     subChecks: [
       "Flagging every R3 break with no ITEM_REF/amount match in R4",
-      "Confirming REC-C-EUR-20260803 / C-EUR-0803-01 has no BMS record",
-      "Confirming REC-C-EUR-20260804 / C-EUR-0804-01 has no BMS record",
-      "Confirming REC-P-HKSC-20260804 / P-HKSC-0804-01 has no BMS record",
+      "Confirming REC-C-EUR-20260803 / C-EUR-0803-01 has no ticketing system record",
+      "Confirming REC-C-EUR-20260804 / C-EUR-0804-01 has no ticketing system record",
+      "Confirming REC-P-HKSC-20260804 / P-HKSC-0804-01 has no ticketing system record",
     ],
     points: [
-      "3 breaks across the population have no BMS record - the same 3 driving the P4 difference.",
+      "3 breaks across the population have no ticketing system record - the same 3 driving the P4 difference.",
     ],
   },
   {
@@ -96,7 +96,7 @@ export const EVIDENCE_CHECKS = [
     subChecks: [
       "Loading 25 reconciliation sign-off PDFs",
       "Loading 25 counterparty statement PDFs",
-      "Loading RCA narratives and escalation emails from BMS/R4/R5",
+      "Loading RCA narratives and escalation emails from the ticketing system/R4/R5",
       "Matching each evidence file to its selected recon ID",
     ],
     points: [
@@ -149,27 +149,27 @@ export const EVIDENCE_CHECKS = [
       "Testing every break belonging to your 25 selected reconciliations against A4 (logged) and A5 (logged accurately), cross-referenced against sign-off evidence.",
     subChecks: [
       "Locating all breaks in R3 belonging to your selected recons",
-      "Testing A4 - logged in BMS, within 1 BD of identification",
-      "Testing A5 - BMS amount within USD 1 of recon output, break type agrees",
+      "Testing A4 - logged in the ticketing system, within 1 Business Day of identification",
+      "Testing A5 - ticketing system amount within USD 1 of recon output, break type agrees",
       "Cross-checking findings against sign-off PDFs and escalation emails",
     ],
     points: [
       "33 breaks found across your 25 selected reconciliations.",
-      "A4/A5 tested for all 33 - 2 breaks with no BMS record (A4) and 1 with an amount mismatch (A5) flagged for further review.",
+      "A4/A5 tested for all 33 - 2 breaks with no ticketing system record (A4) and 1 with an amount mismatch (A5) flagged for further review.",
     ],
   },
   {
     id: "ev-6",
     label: "Step 6 - Assessing A6: RCA adequacy",
     detail:
-      "Running the RCA rubric pre-screen, then an LLM judgement, on every logged break's RCA narrative - checking it states what happened, why, and the corrective action, within 3 BD.",
+      "Running the RCA rubric pre-screen, then an LLM judgement, on every logged break's RCA narrative - checking it states what happened, why, and the corrective action, within 3 Business Days.",
     subChecks: [
       "Rubric pre-screen for RCA category and narrative length",
       "LLM judgement on RCA quality for all logged breaks",
       "Flagging generic or missing RCA narratives",
     ],
     points: [
-      "3 RCA exceptions found - a missing RCA (REC-C-EUR-20260903), a generic 'Resolved' narrative (REC-C-USD-20260810), and one documented 7 BD after identification against a 3 BD SLA (REC-P-HKSC-20260805).",
+      "3 RCA exceptions found - a missing RCA (REC-C-EUR-20260903), a generic 'Resolved' narrative (REC-C-USD-20260810), and one documented 7 Business Days after identification against a 3 Business Day SLA (REC-P-HKSC-20260805).",
     ],
   },
   {
@@ -178,12 +178,12 @@ export const EVIDENCE_CHECKS = [
     detail:
       "Checking each break's resolution date (or, if still open, its age) against the cash/position SLA and the escalation rules.",
     subChecks: [
-      "Checking resolved breaks against the cash (3 BD) / position (5 BD) SLA",
+      "Checking resolved breaks against the cash (3 Business Days) / position (5 Business Days) SLA",
       "Checking open breaks' age and escalation status against the extract date",
-      "Confirming the >= USD 1m breaks were escalated within 1 BD",
+      "Confirming the >= USD 1m breaks were escalated within 1 Business Day",
     ],
     points: [
-      "4 SLA exceptions found - 2 cash breaks closed 8 BD after identification, and 1 position break still open 25 BD after identification with no escalation.",
+      "4 SLA exceptions found - 2 cash breaks closed 8 Business Days after identification, and 1 position break still open 25 Business Days after identification with no escalation.",
     ],
   },
   {
