@@ -1,10 +1,10 @@
-// Control attribute definitions for REC-01 (Custody Reconciliations & Break
+// Test attribute definitions for REC-01 (Custody Reconciliations & Break
 // Management). This is reference/design data captured once at the start of
 // the flow - the design walkthrough row, the three recon-level attributes
 // (A1-A3, testable from the population alone) and the four break-level
 // attributes (A4-A7, testable once evidence is in), plus the roll-up rule.
 export const CONTROL_ATTRIBUTES = {
-  title: "Control Attributes - REC-01",
+  title: "Test Attributes - REC-01",
   note: "Captured for this test. A1-A3 are tested once the population file is in; A4-A7 once evidence is in.",
   columns: [
     { key: "level", label: "Level" },
@@ -21,8 +21,8 @@ export const CONTROL_ATTRIBUTES = {
       level: "Design",
       attr: "-",
       attribute:
-        "Walkthrough one cash and one position recon end-to-end with control owner (statement receipt, matching, sign-off, BMS logging, RCA, escalation).",
-      passCriterion: "Design addresses risk; SLAs defined; BMS mandatory fields.",
+        "Walkthrough one cash and one position recon end-to-end with control owner (statement receipt, matching, sign-off, ticketing system logging, RCA, escalation).",
+      passCriterion: "Design addresses risk; SLAs defined; ticketing system mandatory fields.",
       source: "Policy; walkthrough notes",
       agent: "Planner + Human",
       method: "Walkthrough (human-led)",
@@ -62,8 +62,8 @@ export const CONTROL_ATTRIBUTES = {
     {
       level: "Break",
       attr: "A4",
-      attribute: "ALL breaks logged in BMS (completeness) and timely",
-      passCriterion: "Every R3 item has a BMS record; LOGGED within 1 BD of identification",
+      attribute: "ALL breaks logged in the ticketing system (completeness) and timely",
+      passCriterion: "Every R3 item has a ticketing system record; LOGGED within 1 Business Day of identification",
       source: "R3; R4; sign-off PDF",
       agent: "Test Execution",
       method: "Full match on ITEM_REF + amount",
@@ -73,7 +73,7 @@ export const CONTROL_ATTRIBUTES = {
       level: "Break",
       attr: "A5",
       attribute: "Break logged accurately",
-      passCriterion: "BMS amount within USD 1 of recon output; break type agrees",
+      passCriterion: "Ticketing system amount within USD 1 of recon output; break type agrees",
       source: "R3; R4",
       agent: "Test Execution",
       method: "Deterministic",
@@ -84,7 +84,7 @@ export const CONTROL_ATTRIBUTES = {
       attr: "A6",
       attribute: "RCA performed for each logged break - adequate and timely",
       passCriterion:
-        "RCA category in taxonomy; narrative states what/why/action (min words; not generic); RCA_DATE within 3 BD",
+        "RCA category in taxonomy; narrative states what/why/action (min words; not generic); RCA_DATE within 3 Business Days",
       source: "R4; R5",
       agent: "RCA Assessor (LLM) + engine rubric",
       method: "Rubric pre-screen + LLM judgement + human confirm",
@@ -95,7 +95,7 @@ export const CONTROL_ATTRIBUTES = {
       attr: "A7",
       attribute: "Break closed per SLA (or escalated)",
       passCriterion:
-        "Closed within 3 BD cash / 5 BD position; if not, escalated by SLA+1 BD; >= USD 1m escalated within 1 BD",
+        "Closed within 3 Business Days cash / 5 Business Days position; if not, escalated by SLA+1 Business Day; >= USD 1m escalated within 1 Business Day",
       source: "R4; escalation emails",
       agent: "Test Execution",
       method: "Deterministic (business days, US calendar)",
