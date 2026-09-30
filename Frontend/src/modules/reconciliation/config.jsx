@@ -27,48 +27,12 @@ export const reconciliationModule = {
   },
   welcome: {
     assistantName: "Reconciliation control testing assistant",
+    // Step 0: only a short greeting + ask for the RCM. The control summary
+    // is revealed after the RCM is uploaded (see the "rcm" step below).
     intro: (
       <>
-        I test Global Custody Services daily cash and position
-        reconciliation control (REC-01) the way an auditor would - checking
-        timeliness, independent review, break logging, RCA quality and SLA
-        closure against the evidence you give me, and rolling each finding up
-        to a pass/exception verdict.
-      </>
-    ),
-    // Shown below the intro, above the flow's first question - the fixed
-    // context for this test, so it doesn't need to be asked for in chat.
-    summaryTable: {
-      title: "Control Summary",
-      columns: [
-        { key: "field", label: "Field", minWidth: 150 },
-        { key: "detail", label: "Detail", minWidth: 420 },
-      ],
-      rows: [
-        { field: "Control ID", detail: "REC-01" },
-        { field: "Control objective", detail: CONTROL_CONTEXT.objective },
-        { field: "Risk", detail: CONTROL_CONTEXT.risk },
-        { field: "Control description", detail: CONTROL_CONTEXT.description },
-        {
-          field: "Test Attributes",
-          detail: (
-            <ol style={{ margin: 0, paddingLeft: 18 }}>
-              {TEST_ATTRIBUTES_LIST.map((a, i) => (
-                <li key={i} style={{ marginBottom: i === TEST_ATTRIBUTES_LIST.length - 1 ? 0 : 4 }}>
-                  {a}
-                </li>
-              ))}
-            </ol>
-          ),
-        },
-      ],
-    },
-    closing: (
-      <>
-        Let's get started - please upload the population file(s): the
-        reconciliation inventory, the recon population, the recon-tool break
-        output and the ticketing system extract, and I'll test completeness
-        and accuracy end to end.
+        Please upload your <strong>RCM (Risk & Control Matrix) file</strong> to
+        proceed. Excel or any other format works.
       </>
     ),
   },
@@ -76,6 +40,60 @@ export const reconciliationModule = {
   // processing animation and land a set of output tables, plus a plain
   // in-between step for the user's selected sample (no processing there).
   flow: [
+    {
+      // NEW STEP: user uploads the RCM file. After a short "reading" spinner
+      // the control intro, Control Summary table and the population-file
+      // request are shown (what used to be on the welcome screen).
+      id: "rcm",
+      kind: "reveal-file",
+      progressLabel: "RCM upload",
+      readingLabel: "Reading your RCM file...",
+      readingMs: 2500,
+      reveal: {
+        intro: (
+          <>
+            Thanks - I've read your RCM. I test Global Custody Services daily
+            cash and position reconciliation control (REC-01) the way an
+            auditor would - checking timeliness, independent review, break
+            logging, RCA quality and SLA closure against the evidence you give
+            me, and rolling each finding up to a pass/exception verdict.
+          </>
+        ),
+        summaryTable: {
+          title: "Control Summary",
+          columns: [
+            { key: "field", label: "Field", minWidth: 150 },
+            { key: "detail", label: "Detail", minWidth: 420 },
+          ],
+          rows: [
+            { field: "Control ID", detail: "REC-01" },
+            { field: "Control objective", detail: CONTROL_CONTEXT.objective },
+            { field: "Risk", detail: CONTROL_CONTEXT.risk },
+            { field: "Control description", detail: CONTROL_CONTEXT.description },
+            {
+              field: "Test Attributes",
+              detail: (
+                <ol style={{ margin: 0, paddingLeft: 18 }}>
+                  {TEST_ATTRIBUTES_LIST.map((a, i) => (
+                    <li key={i} style={{ marginBottom: i === TEST_ATTRIBUTES_LIST.length - 1 ? 0 : 4 }}>
+                      {a}
+                    </li>
+                  ))}
+                </ol>
+              ),
+            },
+          ],
+        },
+        closing: (
+          <>
+            Let's get started - please upload the population file(s): the
+            reconciliation inventory, the recon population, the recon-tool
+            break output and the ticketing system extract, and I'll test
+            completeness and accuracy end to end.
+          </>
+        ),
+      },
+    },
     {
       id: "population",
       kind: "file",
