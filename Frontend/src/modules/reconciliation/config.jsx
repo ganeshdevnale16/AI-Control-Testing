@@ -1,3 +1,157 @@
+// // // // import { CONTROL_CONTEXT } from "./data/context";
+// // // // import { CONTROL_ATTRIBUTES } from "./data/attributes";
+// // // // import { POPULATION_CHECKS, EVIDENCE_CHECKS } from "./data/validationChecks";
+// // // // import {
+// // // //   POPULATION_COMPLETENESS,
+// // // //   BREAK_LEVEL_TESTING,
+// // // //   FULL_POPULATION_ANALYTICS,
+// // // // } from "./data/populationTables";
+// // // // import { SAMPLE_LEVEL_TESTING } from "./data/sampleTesting";
+
+// // // // // The control objective/risk/description/test-attributes used to be
+// // // // // gathered one at a time via chat questions. They're now known context for
+// // // // // this test, so they're shown up front as a summary table (below the welcome
+// // // // // intro) instead - the chat-driven flow starts directly at the population
+// // // // // file upload.
+// // // // const TEST_ATTRIBUTES_LIST = CONTROL_ATTRIBUTES.rows
+// // // //   .filter((r) => /^A[1-7]$/.test(r.attr))
+// // // //   .map((r) => r.attribute);
+
+// // // // export const reconciliationModule = {
+// // // //   id: "reconciliation",
+// // // //   menu: {
+// // // //     title: "Agentic Control Testing",
+// // // //     tagline: "Custodian-to-internal-ledger position & cash Agentic",
+// // // //     badge: "Agentic",
+// // // //     accent: "#0891b2",
+// // // //   },
+// // // //   welcome: {
+// // // //     assistantName: "Agentic control testing assistant",
+// // // //     // Step 0: only a short greeting + ask for the RCM. The control summary
+// // // //     // is revealed after the RCM is uploaded (see the "rcm" step below).
+// // // //     intro: (
+// // // //       <>
+// // // //         Please upload your <strong>RCM (Risk & Control Matrix) file</strong> to
+// // // //         proceed. Excel or any other format works.
+// // // //       </>
+// // // //     ),
+// // // //   },
+// // // //   // A linear, chat-driven flow: two file-upload steps that each run a
+// // // //   // processing animation and land a set of output tables, plus a plain
+// // // //   // in-between step for the user's selected sample (no processing there).
+// // // //   flow: [
+// // // //     {
+// // // //       // NEW STEP: user uploads the RCM file. After a short "reading" spinner
+// // // //       // the control intro, Control Summary table and the population-file
+// // // //       // request are shown (what used to be on the welcome screen).
+// // // //       id: "rcm",
+// // // //       kind: "reveal-file",
+// // // //       progressLabel: "RCM upload",
+// // // //       readingLabel: "Reading your RCM file...",
+// // // //       readingMs: 2500,
+// // // //       reveal: {
+// // // //         intro: (
+// // // //           <>
+// // // //             Thanks - I've read your RCM. I test Global Custody Services daily
+// // // //             cash and position reconciliation control (REC-01) the way an
+// // // //             auditor would - checking timeliness, independent review, break
+// // // //             logging, RCA quality and SLA closure against the evidence you give
+// // // //             me, and rolling each finding up to a pass/exception verdict.
+// // // //           </>
+// // // //         ),
+// // // //         summaryTable: {
+// // // //           title: "Control Summary",
+// // // //           columns: [
+// // // //             { key: "field", label: "Field", minWidth: 150 },
+// // // //             { key: "detail", label: "Detail", minWidth: 420 },
+// // // //           ],
+// // // //           rows: [
+// // // //             { field: "Control ID", detail: "REC-01" },
+// // // //             { field: "Control objective", detail: CONTROL_CONTEXT.objective },
+// // // //             { field: "Risk", detail: CONTROL_CONTEXT.risk },
+// // // //             { field: "Control description", detail: CONTROL_CONTEXT.description },
+// // // //             {
+// // // //               field: "Test Attributes",
+// // // //               detail: (
+// // // //                 <ol style={{ margin: 0, paddingLeft: 18 }}>
+// // // //                   {TEST_ATTRIBUTES_LIST.map((a, i) => (
+// // // //                     <li key={i} style={{ marginBottom: i === TEST_ATTRIBUTES_LIST.length - 1 ? 0 : 4 }}>
+// // // //                       {a}
+// // // //                     </li>
+// // // //                   ))}
+// // // //                 </ol>
+// // // //               ),
+// // // //             },
+// // // //           ],
+// // // //         },
+// // // //         closing: (
+// // // //           <>
+// // // //             Let's get started - please upload the population file(s): the
+// // // //             reconciliation inventory, the recon population, the recon-tool
+// // // //             break output and the ticketing system extract, and I'll test
+// // // //             completeness and accuracy end to end.
+// // // //           </>
+// // // //         ),
+// // // //       },
+// // // //     },
+// // // //     {
+// // // //       id: "population",
+// // // //       kind: "file",
+// // // //       progressLabel: "Population testing",
+// // // //       question:
+// // // //         "Next, please upload the population file(s) - the reconciliation inventory, the recon population, the recon-tool break output and the ticketing system extract - and I'll test completeness and accuracy end to end.",
+// // // //       checks: POPULATION_CHECKS,
+// // // //       runningLabel: "Testing population completeness and accuracy...",
+// // // //       tables: [POPULATION_COMPLETENESS, BREAK_LEVEL_TESTING, FULL_POPULATION_ANALYTICS],
+// // // //       exportTab: "IPE",
+// // // //       tablesIntro:
+// // // //         "Population testing is done - here's the completeness & accuracy check, the break-level findings, and the supplementary full-population analytics.",
+// // // //     },
+// // // //     {
+// // // //       id: "sample",
+// // // //       kind: "ask-file-or-text",
+// // // //       progressLabel: "Selected sample",
+// // // //       question:
+// // // //         "Now, please upload your selected sample - the reconciliations you've chosen for testing. Files or the whole folder both work.",
+// // // //       capturedNote:
+// // // //         "I'm not running any processing on this upload - I'll test every break within your selection once you send over the supporting evidence in the next step.",
+// // // //     },
+// // // //     {
+// // // //       id: "evidence",
+// // // //       kind: "file",
+// // // //       progressLabel: "Evidence testing",
+// // // //       question:
+// // // //         "Last step - upload the evidence for your selected sample: sign-off reports, counterparty statements, RCA documentation and escalation emails. Files or the whole folder both work - I'll test every attribute and roll up a verdict for each one.",
+// // // //       checks: EVIDENCE_CHECKS,
+// // // //       runningLabel: "Testing sample evidence against A1-A7...",
+// // // //       tables: [SAMPLE_LEVEL_TESTING],
+// // // //       exportTab: "Testing",
+// // // //       tablesIntro:
+// // // //         "Sample testing is done - here's the attribute-by-attribute result for all 25 selected reconciliations.",
+// // // //       final: true,
+// // // //     },
+// // // //   ],
+// // // //   messages: {
+// // // //     wrongKindNudge_ask: "I just need your answer in the chat to move on.",
+// // // //     wrongKindNudge_file: "I need a file upload for this step - attach it and send.",
+// // // //     afterFlowNudge:
+// // // //       "Testing is complete - download the report above, or start a new chat to run another test.",
+// // // //   },
+// // // //   excel: {
+// // // //     fileName: "REC-01_Custody_Reconciliation_Control_Report.xlsx",
+// // // //     ipeSheetName: "IPE",
+// // // //     testingSheetName: "Testing",
+// // // //     auditSheetName: "Audit Trail",
+// // // //   },
+// // // //   // Flat list of every procedure across both processing steps, for the
+// // // //   // shared Audit Trail sheet builder.
+// // // //   validationChecks: [...POPULATION_CHECKS, ...EVIDENCE_CHECKS],
+// // // // };
+
+
+
+
+
 // // // import { CONTROL_CONTEXT } from "./data/context";
 // // // import { CONTROL_ATTRIBUTES } from "./data/attributes";
 // // // import { POPULATION_CHECKS, EVIDENCE_CHECKS } from "./data/validationChecks";
@@ -20,13 +174,13 @@
 // // // export const reconciliationModule = {
 // // //   id: "reconciliation",
 // // //   menu: {
-// // //     title: "Agentic Control Testing",
-// // //     tagline: "Custodian-to-internal-ledger position & cash Agentic",
-// // //     badge: "Agentic",
+// // //     title: "AI Reconciliation Control Testing",
+// // //     tagline: "Custodian-to-internal-ledger position & cash reconciliation",
+// // //     badge: "Reconciliation",
 // // //     accent: "#0891b2",
 // // //   },
 // // //   welcome: {
-// // //     assistantName: "Agentic control testing assistant",
+// // //     assistantName: "Reconciliation control testing assistant",
 // // //     // Step 0: only a short greeting + ask for the RCM. The control summary
 // // //     // is revealed after the RCM is uploaded (see the "rcm" step below).
 // // //     intro: (
@@ -70,6 +224,12 @@
 // // //             { field: "Control objective", detail: CONTROL_CONTEXT.objective },
 // // //             { field: "Risk", detail: CONTROL_CONTEXT.risk },
 // // //             { field: "Control description", detail: CONTROL_CONTEXT.description },
+// // //             { field: "Type / nature", detail: CONTROL_CONTEXT.typeNature },
+// // //             { field: "Frequency", detail: CONTROL_CONTEXT.frequency },
+// // //             { field: "Key control?", detail: CONTROL_CONTEXT.isKey },
+// // //             { field: "Owner", detail: CONTROL_CONTEXT.owner },
+// // //             { field: "Systems", detail: CONTROL_CONTEXT.systems },
+// // //             { field: "Test approach", detail: CONTROL_CONTEXT.testApproach },
 // // //             {
 // // //               field: "Test Attributes",
 // // //               detail: (
@@ -152,6 +312,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 // // import { CONTROL_CONTEXT } from "./data/context";
 // // import { CONTROL_ATTRIBUTES } from "./data/attributes";
 // // import { POPULATION_CHECKS, EVIDENCE_CHECKS } from "./data/validationChecks";
@@ -174,13 +345,13 @@
 // // export const reconciliationModule = {
 // //   id: "reconciliation",
 // //   menu: {
-// //     title: "AI Reconciliation Control Testing",
+// //     title: "Agentic Control Testing",
 // //     tagline: "Custodian-to-internal-ledger position & cash reconciliation",
-// //     badge: "Reconciliation",
+// //     badge: "Agentic",
 // //     accent: "#0891b2",
 // //   },
 // //   welcome: {
-// //     assistantName: "Reconciliation control testing assistant",
+// //     assistantName: "Agentic control testing assistant",
 // //     // Step 0: only a short greeting + ask for the RCM. The control summary
 // //     // is revealed after the RCM is uploaded (see the "rcm" step below).
 // //     intro: (
@@ -289,6 +460,18 @@
 // //       tablesIntro:
 // //         "Sample testing is done - here's the attribute-by-attribute result for all 25 selected reconciliations.",
 // //       final: true,
+// //       // Shown when the user clicks "Exception Summary" next to the download
+// //       // button. Plain text lines - edit freely.
+// //       exceptionSummary: {
+// //         title: "Exception Summary",
+// //         points: [
+// //           "Overall: 13 of the 25 sampled reconciliations carry at least one exception; 12 passed all seven attributes (A1-A7).",
+// //           "Recon level (A1-A3) - 3 exceptions: REC-C-EUR-20260825 completed late (14:22 vs 12:00 deadline); REC-C-EUR-20260818 reviewed by its own preparer; REC-P-ICSD-20260811 recon balance differs from the counterparty statement by USD 250,000.",
+// //           "Break logging (A4-A5) - 4 exceptions: 2 breaks never logged in the ticketing system (REC-C-EUR-20260804, REC-P-HKSC-20260804); 1 logged 3 Business Days late (REC-C-EUR-20260827); 1 logged at 53,281.22 vs 63,281.22 per the recon (REC-P-HKSC-20260903).",
+// //           "RCA (A6) - 3 exceptions: no RCA recorded (REC-C-EUR-20260903); generic 'Resolved' narrative (REC-C-USD-20260810); RCA documented 7 Business Days after identification vs 3 Business Day SLA (REC-P-HKSC-20260805).",
+// //           "SLA closure (A7) - 3 exceptions: cash breaks closed 8 Business Days after identification vs 3 Business Day SLA (REC-C-USD-20260831, REC-C-USD-20260901); position break open 25 Business Days with no escalation (REC-P-HKSC-20260819).",
+// //         ],
+// //       },
 // //     },
 // //   ],
 // //   messages: {
@@ -307,17 +490,6 @@
 // //   // shared Audit Trail sheet builder.
 // //   validationChecks: [...POPULATION_CHECKS, ...EVIDENCE_CHECKS],
 // // };
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -346,7 +518,7 @@
 //   id: "reconciliation",
 //   menu: {
 //     title: "Agentic Control Testing",
-//     tagline: "Custodian-to-internal-ledger position & cash reconciliation",
+//     tagline: "Custodian-to-internal-ledger position & cash",
 //     badge: "Agentic",
 //     accent: "#0891b2",
 //   },
@@ -464,12 +636,22 @@
 //       // button. Plain text lines - edit freely.
 //       exceptionSummary: {
 //         title: "Exception Summary",
+//         // Opening paragraph, then the lead-in line, then one bullet per point.
+//         intro:
+//           "During testing of 13 reconciliation samples (out of a population of 25 reconciliations) for the period 4 August 2026 to 3 September 2026, multiple deviations were noted across the reconciliation lifecycle, including review and approval, timeliness of completion, balance accuracy, issue logging, root cause analysis (RCA), escalation, and exception resolution.",
+//         leadIn: "Specifically:",
 //         points: [
-//           "Overall: 13 of the 25 sampled reconciliations carry at least one exception; 12 passed all seven attributes (A1-A7).",
-//           "Recon level (A1-A3) - 3 exceptions: REC-C-EUR-20260825 completed late (14:22 vs 12:00 deadline); REC-C-EUR-20260818 reviewed by its own preparer; REC-P-ICSD-20260811 recon balance differs from the counterparty statement by USD 250,000.",
-//           "Break logging (A4-A5) - 4 exceptions: 2 breaks never logged in the ticketing system (REC-C-EUR-20260804, REC-P-HKSC-20260804); 1 logged 3 Business Days late (REC-C-EUR-20260827); 1 logged at 53,281.22 vs 63,281.22 per the recon (REC-P-HKSC-20260903).",
-//           "RCA (A6) - 3 exceptions: no RCA recorded (REC-C-EUR-20260903); generic 'Resolved' narrative (REC-C-USD-20260810); RCA documented 7 Business Days after identification vs 3 Business Day SLA (REC-P-HKSC-20260805).",
-//           "SLA closure (A7) - 3 exceptions: cash breaks closed 8 Business Days after identification vs 3 Business Day SLA (REC-C-USD-20260831, REC-C-USD-20260901); position break open 25 Business Days with no escalation (REC-P-HKSC-20260819).",
+//           "One reconciliation was reviewed by the preparer instead of an independent reviewer, indicating a segregation of duties violation.",
+//           "One reconciliation was completed after the established due date.",
+//           "One reconciliation contained a USD 250,000 variance between the reconciliation balance and the supporting counterparty statement.",
+//           "Two reconciliation breaks identified in reconciliation outputs were not recorded in the ticketing system.",
+//           "One break was logged two business days beyond the prescribed SLA.",
+//           "Two exceptions contained inadequate or missing RCA documentation.",
+//           "One RCA was documented four business days beyond the defined SLA.",
+//           "One cash reconciliation break was closed five business days beyond the prescribed resolution SLA.",
+//           "One high-value break (USD 2.35 million) was escalated three business days later than required.",
+//           "One position reconciliation break remained open for 25 business days against a five-day SLA and had not been escalated.",
+//           "One reconciliation contained an inconsistency between the ticketing system amount and the reconciliation output (difference of 10,000).",
 //         ],
 //       },
 //     },
@@ -490,6 +672,15 @@
 //   // shared Audit Trail sheet builder.
 //   validationChecks: [...POPULATION_CHECKS, ...EVIDENCE_CHECKS],
 // };
+
+
+
+
+
+
+
+
+
 
 
 
@@ -517,13 +708,13 @@ const TEST_ATTRIBUTES_LIST = CONTROL_ATTRIBUTES.rows
 export const reconciliationModule = {
   id: "reconciliation",
   menu: {
-    title: "Agentic Control Testing",
-    tagline: "Custodian-to-internal-ledger position & cash",
-    badge: "Agentic",
+    title: "AI Reconciliation Control Testing",
+    tagline: "Custodian-to-internal-ledger position & cash reconciliation",
+    badge: "Reconciliation",
     accent: "#0891b2",
   },
   welcome: {
-    assistantName: "Agentic control testing assistant",
+    assistantName: "Reconciliation control testing assistant",
     // Step 0: only a short greeting + ask for the RCM. The control summary
     // is revealed after the RCM is uploaded (see the "rcm" step below).
     intro: (
@@ -636,22 +827,22 @@ export const reconciliationModule = {
       // button. Plain text lines - edit freely.
       exceptionSummary: {
         title: "Exception Summary",
-        // Opening paragraph, then the lead-in line, then one bullet per point.
+        // Opening line, then one bullet per point. (Optional: add a
+        // leadIn: "..." line to show a bold line between the two.)
         intro:
-          "During testing of 13 reconciliation samples (out of a population of 25 reconciliations) for the period 4 August 2026 to 3 September 2026, multiple deviations were noted across the reconciliation lifecycle, including review and approval, timeliness of completion, balance accuracy, issue logging, root cause analysis (RCA), escalation, and exception resolution.",
-        leadIn: "Specifically:",
+          "On review of 13 /25 instances, for the period 4 August 2026 to 3 September 2026, we noted the following exceptions",
         points: [
-          "One reconciliation was reviewed by the preparer instead of an independent reviewer, indicating a segregation of duties violation.",
-          "One reconciliation was completed after the established due date.",
-          "One reconciliation contained a USD 250,000 variance between the reconciliation balance and the supporting counterparty statement.",
-          "Two reconciliation breaks identified in reconciliation outputs were not recorded in the ticketing system.",
-          "One break was logged two business days beyond the prescribed SLA.",
-          "Two exceptions contained inadequate or missing RCA documentation.",
-          "One RCA was documented four business days beyond the defined SLA.",
-          "One cash reconciliation break was closed five business days beyond the prescribed resolution SLA.",
-          "One high-value break (USD 2.35 million) was escalated three business days later than required.",
-          "One position reconciliation break remained open for 25 business days against a five-day SLA and had not been escalated.",
-          "One reconciliation contained an inconsistency between the ticketing system amount and the reconciliation output (difference of 10,000).",
+          "1 instance was reviewed by the preparer instead of an independent reviewer, indicating a segregation of duties deviation.",
+          "1 instance was completed after the established due date.",
+          "1 instance contained a USD 250,000 variance between the reconciliation balance and the supporting counterparty statement.",
+          "2 instances of breaks identified in reconciliation outputs were not recorded in the ticketing system.",
+          "1 instance of break was logged two business days beyond the prescribed SLA.",
+          "2 exceptions contained inadequate or missing RCA documentation.",
+          "1 RCA was documented four business days beyond the defined SLA.",
+          "1 cash reconciliation break was closed five business days beyond the prescribed resolution SLA.",
+          "1 high-value break (USD 2.35 million) was escalated three business days later than required.",
+          "1 position reconciliation break remained open for 25 business days against a five-day SLA and had not been escalated.",
+          "1 reconciliation contained an inconsistency between the ticketing system amount and the reconciliation output (difference of 10,000).",
         ],
       },
     },
